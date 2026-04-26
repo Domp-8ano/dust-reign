@@ -1,14 +1,24 @@
-FROM node:22.12.0-alpine AS builder
+FROM node:22.12.0-alpine AS build
+
 WORKDIR /app
-COPY package.json ./
-RUN npm install --include=dev --no-audit --no-fund
+
+COPY package*.json ./
+RUN npm ci
+
 COPY . .
 RUN npm run build
-RUN ls -la /app/dist && echo "BUILD OK"
 
-FROM node:22.12.0-alpine AS runner
+FROM node:22.12.0-alpine AS runtime
+
 WORKDIR /app
-RUN npm install -g serve@14
-COPY --from=builder /app/dist ./dist
-RUN ls -la /app/dist && echo "DIST OK"
-CMD sh -c "serve -s dist -l ${PORT:-8080}"
+
+ENV NODE_ENV=production
+ENV PORT=3000
+
+COPY --from=build /app/dist ./dist
+
+RUN npm install -g serve@14.2.4
+
+EXPOSE 3000
+
+CMD ["serve", "-s", "dist", "-l", "tcp://0.0.0.0:3000"]

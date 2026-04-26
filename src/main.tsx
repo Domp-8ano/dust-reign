@@ -1,31 +1,46 @@
-import { StrictMode } from "react";
+import { Component, StrictMode, type ErrorInfo, type ReactNode } from "react";
 import { createRoot } from "react-dom/client";
 import "./index.css";
 import App from "./App";
 
-document.documentElement.style.background = "#1c1306";
-document.body.style.background = "#1c1306";
-document.body.style.margin = "0";
-document.body.style.padding = "0";
+class RuntimeErrorBoundary extends Component<{ children: ReactNode }, { error?: Error }> {
+  state: { error?: Error } = {};
 
-const rootEl = document.getElementById("root");
+  static getDerivedStateFromError(error: Error) {
+    return { error };
+  }
 
-if (!rootEl) {
-  document.body.innerHTML =
-    '<div style="color:#f2b84b;background:#1c1306;min-height:100vh;display:flex;align-items:center;justify-content:center;font-family:sans-serif;font-size:2rem;font-weight:900;">ROOT NOT FOUND</div>';
-} else {
-  try {
-    createRoot(rootEl).render(
-      <StrictMode>
-        <App />
-      </StrictMode>
+  componentDidCatch(error: Error, info: ErrorInfo) {
+    console.error("Dust Reign runtime error", error, info);
+  }
+
+  render() {
+    if (!this.state.error) return this.props.children;
+
+    return (
+      <main className="app-shell error-screen">
+        <section>
+          <p className="phase-label">Runtime Error</p>
+          <h1>Dust Reign</h1>
+          <p>{this.state.error.message}</p>
+        </section>
+      </main>
     );
-  } catch (err) {
-    rootEl.innerHTML = `<div style="color:#f2b84b;background:#1c1306;min-height:100vh;display:flex;align-items:center;justify-content:center;font-family:sans-serif;padding:2rem;">
-      <div>
-        <h1 style="margin:0;color:#ff4c38;">React Mount Error</h1>
-        <pre style="color:#ffd27a;margin-top:1rem;white-space:pre-wrap;">${String(err)}</pre>
-      </div>
-    </div>`;
   }
 }
+
+const rootElement = document.getElementById("root");
+
+if (!rootElement) {
+  throw new Error("Dust Reign root element was not found.");
+}
+
+document.body.classList.add("react-mounted");
+
+createRoot(rootElement).render(
+  <StrictMode>
+    <RuntimeErrorBoundary>
+      <App />
+    </RuntimeErrorBoundary>
+  </StrictMode>
+);
