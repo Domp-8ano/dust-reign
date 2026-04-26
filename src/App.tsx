@@ -1,8 +1,10 @@
 import { useEffect, useMemo, useState } from "react";
+
 /* ─── TYPES ─────────────────────────────────────── */
 type Page        = "home" | "inventory" | "trade" | "profile";
 type Rarity      = "Consumer" | "Industrial" | "Mil-Spec" | "Restricted" | "Classified" | "Covert";
 type TradeStatus = "pending" | "accepted" | "rejected";
+
 interface InventoryItem {
   id: string; name: string; weapon: string;
   rarity: Rarity; finish: string; value: number; equipped?: boolean;
@@ -11,6 +13,7 @@ interface Trade {
   id: string; from: string; to: string;
   item: string; status: TradeStatus; createdAt: string;
 }
+
 /* ─── STATIC DATA ────────────────────────────────── */
 const NAV: { page: Page; label: string }[] = [
   { page: "home",      label: "Home"      },
@@ -18,6 +21,7 @@ const NAV: { page: Page; label: string }[] = [
   { page: "trade",     label: "Trade"     },
   { page: "profile",   label: "Profile"   },
 ];
+
 const SKINS: InventoryItem[] = [
   { id:"s1", name:"High Noon Marshal",   weapon:"Rifle",   rarity:"Covert",     finish:"Sun-baked gold receiver with black iron barrel", value:7200, equipped:true },
   { id:"s2", name:"Dustline Peacemaker", weapon:"Pistol",  rarity:"Classified", finish:"Engraved brass slide with worn leather grip",    value:3600 },
@@ -26,16 +30,19 @@ const SKINS: InventoryItem[] = [
   { id:"s5", name:"Rail Spur",           weapon:"Pistol",  rarity:"Industrial", finish:"Blued steel, brass pinstripe, serialized frame", value:520  },
   { id:"s6", name:"Claim Stake",         weapon:"Knife",   rarity:"Consumer",   finish:"Weathered wood handle and brushed iron blade",   value:260  },
 ];
+
 const INIT_TRADES: Trade[] = [
   { id:"t1", from:"RanchHand",  to:"You",        item:"Rail Spur",          status:"pending",  createdAt:"2 min ago"  },
   { id:"t2", from:"You",        to:"Marshal_13", item:"Ghost Town Varmint", status:"accepted", createdAt:"Yesterday"  },
   { id:"t3", from:"Prospector", to:"You",        item:"Canyon Breacher",    status:"rejected", createdAt:"3 days ago" },
 ];
+
 const API_ROUTES = [
   "POST /register","POST /login","GET /profile",
   "GET /inventory","POST /inventory/add","DELETE /inventory/remove",
   "POST /trade/send","POST /trade/respond","GET /trade/history",
 ];
+
 const RARITY_CLR: Record<Rarity,string> = {
   "Consumer":"#b0b0b0","Industrial":"#70a4d8",
   "Mil-Spec":"#6080ff","Restricted":"#aa66ff",
@@ -44,21 +51,23 @@ const RARITY_CLR: Record<Rarity,string> = {
 const STATUS_CLR: Record<TradeStatus,string> = {
   pending:"#f2b84b", accepted:"#44cc77", rejected:"#dd3322",
 };
+
 const fmt = (n: number) => new Intl.NumberFormat("en-US").format(n) + " CR";
+
 /* ─── DESIGN TOKENS ──────────────────────────────── */
-// Bright enough to be unmistakably visible on any display
 const C = {
-  bg:        "#1c1306",   // deep brown, NOT black
-  bgCard:    "#2a1d0a",   // card surface
-  bgHover:   "#3a2810",   // hover state
-  border:    "#5a3e1a",   // visible gold-brown border
-  borderHi:  "#c8892a",   // highlighted border
-  gold:      "#f2b84b",   // primary gold
-  goldBri:   "#ffd27a",   // bright gold
-  text:      "#ffecc8",   // warm cream text
-  textMuted: "#c4a06a",   // muted text
-  topbar:    "#110d04",   // topbar bg
+  bg:        "#1c1306",
+  bgCard:    "#2a1d0a",
+  bgHover:   "#3a2810",
+  border:    "#5a3e1a",
+  borderHi:  "#c8892a",
+  gold:      "#f2b84b",
+  goldBri:   "#ffd27a",
+  text:      "#ffecc8",
+  textMuted: "#c4a06a",
+  topbar:    "#110d04",
 };
+
 /* ─── SPLASH ─────────────────────────────────────── */
 function Splash() {
   return (
@@ -99,6 +108,7 @@ function Splash() {
     </div>
   );
 }
+
 /* ─── ROOT APP ───────────────────────────────────── */
 export default function App() {
   const [ready,       setReady]      = useState(false);
@@ -108,29 +118,37 @@ export default function App() {
   const [selectedId,  setSelectedId] = useState(SKINS[0].id);
   const [receiver,    setReceiver]   = useState("Marshal_13");
   const [launchState, setLaunch]     = useState("Ready to launch");
+
   useEffect(() => {
     document.body.style.background = C.bg;
     document.body.style.margin     = "0";
     const t = setTimeout(() => setReady(true), 700);
     return () => clearTimeout(t);
   }, []);
+
   const selected   = inventory.find(i => i.id === selectedId) ?? inventory[0];
   const totalValue = useMemo(() => inventory.reduce((s,i) => s + i.value, 0), [inventory]);
+
   function launch() {
     const tok = "jwt.p1." + crypto.randomUUID().slice(0,8);
     setLaunch("Generating token…");
     setTimeout(() => setLaunch(`fps_client.exe --token=${tok}`), 500);
   }
+
   function sendTrade() {
     if (receiver.trim().length < 2) return;
     setTrades(prev => [{ id:"t"+Date.now(), from:"You", to:receiver.trim(), item:selected.name, status:"pending", createdAt:"Just now" }, ...prev]);
   }
+
   function respond(id: string, status: Exclude<TradeStatus,"pending">) {
     setTrades(prev => prev.map(t => t.id===id ? {...t,status} : t));
   }
+
   if (!ready) return <Splash />;
+
   return (
     <div style={{ minHeight:"100vh", background:C.bg, color:C.text, fontFamily:"Inter,system-ui,sans-serif", margin:0 }}>
+
       {/* ── TOPBAR ── */}
       <header style={{
         position:"fixed", top:0, left:0, right:0, zIndex:100,
@@ -156,6 +174,7 @@ export default function App() {
             <div style={{ color:C.textMuted, fontSize:"0.62rem", letterSpacing:"0.2em", textTransform:"uppercase" }}>Tactical FPS Network</div>
           </div>
         </button>
+
         <nav style={{ display:"flex", gap:"0.2rem" }}>
           {NAV.map(n => (
             <button key={n.page} onClick={() => setPage(n.page)} style={{
@@ -171,7 +190,8 @@ export default function App() {
           ))}
         </nav>
       </header>
-      {/* ── PAGE CONTENT ── */}
+
+      {/* ── PAGES ── */}
       <div style={{ paddingTop:"5rem" }}>
         {page==="home"      && <HomeP      launch={launch} launchState={launchState} goTo={setPage} />}
         {page==="inventory" && <InventoryP inventory={inventory} selectedId={selectedId} onSelect={setSelectedId} />}
@@ -181,19 +201,20 @@ export default function App() {
     </div>
   );
 }
-/* ─── HOME PAGE ──────────────────────────────────── */
+
+/* ─── HOME ───────────────────────────────────────── */
 function HomeP({ launch, launchState, goTo }: { launch:()=>void; launchState:string; goTo:(p:Page)=>void }) {
   return (
     <section style={{ minHeight:"calc(100vh - 5rem)", display:"flex", alignItems:"center", padding:"2rem clamp(1rem,6vw,5rem)", position:"relative", overflow:"hidden" }}>
-      {/* background layers — clearly visible warm tones */}
       <div style={{ position:"absolute", inset:0, background:"linear-gradient(150deg,#2e1a06 0%,#1c1005 50%,#251408 100%)" }}/>
       <div style={{ position:"absolute", top:"8%", right:"10%", width:"clamp(10rem,25vw,24rem)", aspectRatio:"1", borderRadius:"50%", background:"radial-gradient(circle,rgba(255,210,100,0.55),rgba(220,110,30,0.25) 50%,transparent 72%)", filter:"blur(3px)" }}/>
       <div style={{ position:"absolute", bottom:0, left:0, right:0, height:"35%", background:"linear-gradient(to top,#1c1005,transparent)" }}/>
-      {/* content */}
+
       <div style={{ position:"relative", zIndex:1, maxWidth:"820px" }}>
         <div style={{ display:"inline-block", padding:"0.3rem 0.8rem", background:C.bgCard, border:`1px solid ${C.border}`, marginBottom:"1.2rem" }}>
           <span style={{ color:C.gold, fontSize:"0.7rem", fontWeight:900, letterSpacing:"0.28em", textTransform:"uppercase" }}>Phase 1 · Front-End Platform</span>
         </div>
+
         <h1 style={{
           margin:0, color:C.goldBri,
           fontFamily:"Georgia,'Times New Roman',serif",
@@ -204,19 +225,22 @@ function HomeP({ launch, launchState, goTo }: { launch:()=>void; launchState:str
         }}>
           Dust<br/>Reign
         </h1>
+
         <p style={{ maxWidth:"44rem", margin:"1.8rem 0 0", color:C.text, fontSize:"clamp(0.95rem,1.6vw,1.18rem)", lineHeight:1.8, opacity:0.9 }}>
           A western tactical shooter hub. Launch the FPS client, inspect weapon skins,
           execute secure item trades and sync your JWT identity across the ecosystem.
         </p>
+
         <div style={{ display:"flex", flexWrap:"wrap", gap:"1rem", marginTop:"2.2rem" }}>
           <button onClick={launch} style={BtnP}>🎮 Launch Game</button>
           <button onClick={() => goTo("inventory")} style={BtnS}>View Inventory</button>
           <button onClick={() => goTo("trade")} style={BtnS}>Trade Items</button>
         </div>
+
         <div style={{ marginTop:"1rem", padding:"0.6rem 0.9rem", background:C.bgCard, border:`1px solid ${C.border}`, display:"inline-block" }}>
           <span style={{ color:C.textMuted, fontFamily:"monospace", fontSize:"0.8rem" }}>{launchState}</span>
         </div>
-        {/* integration ribbon */}
+
         <div style={{ marginTop:"3rem", display:"flex", alignItems:"center", gap:"0.8rem", flexWrap:"wrap" }}>
           {["Frontend","Backend API","Supabase DB","FPS Client"].map((lbl,i,arr) => (
             <span key={lbl} style={{ display:"flex", alignItems:"center", gap:"0.8rem" }}>
@@ -229,14 +253,14 @@ function HomeP({ launch, launchState, goTo }: { launch:()=>void; launchState:str
     </section>
   );
 }
-/* ─── INVENTORY PAGE ─────────────────────────────── */
+
+/* ─── INVENTORY ──────────────────────────────────── */
 function InventoryP({ inventory, selectedId, onSelect }: { inventory:InventoryItem[]; selectedId:string; onSelect:(id:string)=>void }) {
   const sel = inventory.find(i => i.id===selectedId) ?? inventory[0];
   return (
     <section style={Wrap}>
       <Heading tag="Inventory Service" title="Weapon Skins" sub="Synced from GET /inventory after JWT validation." />
       <div style={{ display:"grid", gridTemplateColumns:"1fr 300px", gap:"1rem", alignItems:"start" }}>
-        {/* grid */}
         <div style={{ display:"grid", gridTemplateColumns:"repeat(3,1fr)", gap:"0.75rem" }}>
           {inventory.map(item => (
             <button key={item.id} onClick={() => onSelect(item.id)} style={{
@@ -249,7 +273,6 @@ function InventoryP({ inventory, selectedId, onSelect }: { inventory:InventoryIt
               color:C.text, transition:"all 150ms",
               boxShadow: item.id===selectedId ? `0 0 20px ${RARITY_CLR[item.rarity]}44` : "none",
             }}>
-              {/* weapon bar */}
               <div style={{
                 position:"absolute", top:"1.8rem", left:"1.2rem",
                 width:"72%", height:"1.8rem",
@@ -263,7 +286,6 @@ function InventoryP({ inventory, selectedId, onSelect }: { inventory:InventoryIt
             </button>
           ))}
         </div>
-        {/* inspect */}
         <div style={{ ...Card, position:"sticky", top:"5.5rem", padding:"1.2rem" }}>
           <Tag>Selected</Tag>
           <h3 style={{ margin:"0.5rem 0 0", color:C.goldBri, fontSize:"1.5rem", fontWeight:900, lineHeight:1 }}>{sel.name}</h3>
@@ -279,7 +301,8 @@ function InventoryP({ inventory, selectedId, onSelect }: { inventory:InventoryIt
     </section>
   );
 }
-/* ─── TRADE PAGE ─────────────────────────────────── */
+
+/* ─── TRADE ──────────────────────────────────────── */
 function TradeP({ inventory, selectedId, receiver, trades, onSelect, onReceiver, onSend, onRespond }: {
   inventory:InventoryItem[]; selectedId:string; receiver:string; trades:Trade[];
   onSelect:(id:string)=>void; onReceiver:(v:string)=>void;
@@ -326,7 +349,8 @@ function TradeP({ inventory, selectedId, receiver, trades, onSelect, onReceiver,
     </section>
   );
 }
-/* ─── PROFILE PAGE ───────────────────────────────── */
+
+/* ─── PROFILE ────────────────────────────────────── */
 function ProfileP({ totalValue, trades }: { totalValue:number; trades:Trade[] }) {
   const accepted = trades.filter(t=>t.status==="accepted").length;
   return (
@@ -360,6 +384,7 @@ function ProfileP({ totalValue, trades }: { totalValue:number; trades:Trade[] })
     </section>
   );
 }
+
 /* ─── SHARED COMPONENTS ──────────────────────────── */
 function Heading({ tag, title, sub }: { tag:string; title:string; sub:string }) {
   return (
@@ -370,6 +395,7 @@ function Heading({ tag, title, sub }: { tag:string; title:string; sub:string }) 
     </div>
   );
 }
+
 function Tag({ children }: { children: React.ReactNode }) {
   return (
     <span style={{ display:"inline-block", padding:"0.2rem 0.6rem", background:C.bgCard, border:`1px solid ${C.border}`, color:C.gold, fontSize:"0.68rem", fontWeight:900, letterSpacing:"0.22em", textTransform:"uppercase" }}>
@@ -377,42 +403,11 @@ function Tag({ children }: { children: React.ReactNode }) {
     </span>
   );
 }
+
 /* ─── SHARED STYLES ──────────────────────────────── */
-const Wrap: React.CSSProperties = {
-  width:"min(1180px,calc(100% - 2rem))",
-  margin:"0 auto", padding:"2.5rem 0 5rem",
-};
-const Card: React.CSSProperties = {
-  background: C.bgCard,
-  border: `1px solid ${C.border}`,
-  boxShadow: "0 8px 40px rgba(0,0,0,0.5)",
-};
-const BtnP: React.CSSProperties = {
-  minHeight:"2.8rem", padding:"0 1.4rem",
-  color:"#1a0900",
-  background:"linear-gradient(135deg,#ffe090,#d4881e 50%,#8e3d10)",
-  border:`1px solid ${C.goldBri}88`,
-  fontWeight:900, fontSize:"0.76rem",
-  letterSpacing:"0.12em", textTransform:"uppercase",
-  cursor:"pointer",
-  boxShadow:`0 0 18px ${C.gold}44, 0 4px 16px rgba(0,0,0,0.5)`,
-  transition:"all 150ms",
-};
-const BtnS: React.CSSProperties = {
-  ...BtnP,
-  color: C.goldBri,
-  background: C.bgCard,
-  border: `1px solid ${C.border}`,
-  boxShadow: "none",
-};
-const LblS: React.CSSProperties = {
-  display:"grid", gap:"0.4rem",
-  color:C.gold, fontSize:"0.7rem",
-  fontWeight:900, letterSpacing:"0.14em", textTransform:"uppercase",
-};
-const InpS: React.CSSProperties = {
-  width:"100%", minHeight:"2.8rem", padding:"0 0.8rem",
-  color:C.text, background:"#0e0a04",
-  border:`1px solid ${C.border}`,
-  outline:"none", fontFamily:"inherit", fontSize:"0.92rem",
-};
+const Wrap: React.CSSProperties = { width:"min(1180px,calc(100% - 2rem))", margin:"0 auto", padding:"2.5rem 0 5rem" };
+const Card: React.CSSProperties = { background:C.bgCard, border:`1px solid ${C.border}`, boxShadow:"0 8px 40px rgba(0,0,0,0.5)" };
+const BtnP: React.CSSProperties = { minHeight:"2.8rem", padding:"0 1.4rem", color:"#1a0900", background:"linear-gradient(135deg,#ffe090,#d4881e 50%,#8e3d10)", border:`1px solid ${C.goldBri}88`, fontWeight:900, fontSize:"0.76rem", letterSpacing:"0.12em", textTransform:"uppercase", cursor:"pointer", boxShadow:`0 0 18px ${C.gold}44, 0 4px 16px rgba(0,0,0,0.5)`, transition:"all 150ms" };
+const BtnS: React.CSSProperties = { ...BtnP, color:C.goldBri, background:C.bgCard, border:`1px solid ${C.border}`, boxShadow:"none" };
+const LblS: React.CSSProperties = { display:"grid", gap:"0.4rem", color:C.gold, fontSize:"0.7rem", fontWeight:900, letterSpacing:"0.14em", textTransform:"uppercase" };
+const InpS: React.CSSProperties = { width:"100%", minHeight:"2.8rem", padding:"0 0.8rem", color:C.text, background:"#0e0a04", border:`1px solid ${C.border}`, outline:"none", fontFamily:"inherit", fontSize:"0.92rem" };
