@@ -183,26 +183,7 @@ export default function App() {
           "radial-gradient(circle at 18% 14%, rgba(244,176,67,0.24), transparent 28rem), linear-gradient(125deg, #060504 0%, #16100a 48%, #070604 100%)",
       }}
     >
-      <div
-        style={{
-          position: "fixed",
-          top: 12,
-          left: 12,
-          zIndex: 99999,
-          padding: "8px 10px",
-          color: "#080603",
-          background: "#ffd27a",
-          border: "1px solid rgba(255,255,255,0.45)",
-          fontFamily: "system-ui, sans-serif",
-          fontSize: 11,
-          fontWeight: 900,
-          letterSpacing: "0.12em",
-          textTransform: "uppercase",
-          boxShadow: "0 0 28px rgba(242,184,75,0.45)",
-        }}
-      >
-        Dust Reign Live Build
-      </div>
+
       <div className="scanline" />
       <header className="topbar">
         <button className="brand-mark" onClick={() => setPage("home")} aria-label="Open home">
