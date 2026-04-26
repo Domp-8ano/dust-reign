@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 type Page = "home" | "inventory" | "trade" | "profile";
 type Rarity = "Consumer" | "Industrial" | "Mil-Spec" | "Restricted" | "Classified" | "Covert";
@@ -125,13 +125,36 @@ function formatCredits(value: number) {
   return new Intl.NumberFormat("en-US").format(value);
 }
 
+function SplashScreen() {
+  return (
+    <div className="splash-screen">
+      <div className="splash-inner">
+        <div className="splash-sigil">DR</div>
+        <p className="splash-title">Dust Reign</p>
+        <p className="splash-sub">Tactical FPS Network</p>
+        <div className="splash-bar">
+          <div className="splash-bar-fill" />
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export default function App() {
+  const [ready, setReady] = useState(false);
   const [page, setPage] = useState<Page>("home");
   const [inventory, setInventory] = useState(baseInventory);
   const [trades, setTrades] = useState(initialTrades);
   const [selectedItemId, setSelectedItemId] = useState(baseInventory[0].id);
   const [receiver, setReceiver] = useState("Marshal_13");
   const [launchState, setLaunchState] = useState("Ready");
+
+  useEffect(() => {
+    const timer = setTimeout(() => setReady(true), 900);
+    return () => clearTimeout(timer);
+  }, []);
+
+  if (!ready) return <SplashScreen />;
 
   const selectedItem = inventory.find((item) => item.id === selectedItemId) ?? inventory[0];
   const profileValue = useMemo(
@@ -142,7 +165,10 @@ export default function App() {
   function launchGame() {
     const fakeToken = "jwt.phase1.local." + crypto.randomUUID().slice(0, 8);
     setLaunchState("Token issued");
-    window.setTimeout(() => setLaunchState(`Launch command copied: fps_client.exe --token=${fakeToken}`), 450);
+    window.setTimeout(
+      () => setLaunchState(`Launch command copied: fps_client.exe --token=${fakeToken}`),
+      450,
+    );
   }
 
   function equipItem(itemId: string) {
@@ -154,7 +180,6 @@ export default function App() {
 
   function sendTrade() {
     if (!selectedItem || receiver.trim().length < 3) return;
-
     const trade: Trade = {
       id: `tr-${Math.floor(9000 + Math.random() * 999)}`,
       from: "You",
@@ -163,7 +188,6 @@ export default function App() {
       status: "pending",
       createdAt: "Just now",
     };
-
     setTrades((history) => [trade, ...history]);
   }
 
@@ -184,7 +208,6 @@ export default function App() {
             <small>Tactical FPS Network</small>
           </span>
         </button>
-
         <nav className="nav-tabs" aria-label="Primary navigation">
           {navItems.map((item) => (
             <button
@@ -233,7 +256,6 @@ function HomePage({ launchState, onLaunch }: { launchState: string; onLaunch: ()
         <span className="dust dust-one" />
         <span className="dust dust-two" />
       </div>
-
       <div className="hero-content">
         <p className="phase-label">Phase 1: Front-End Platform</p>
         <h1>Dust Reign</h1>
@@ -243,11 +265,12 @@ function HomePage({ launchState, onLaunch }: { launchState: string; onLaunch: ()
         </p>
         <div className="hero-actions">
           <button className="primary-action" onClick={onLaunch}>Launch Game</button>
-          <button className="secondary-action" onClick={() => navigator.clipboard?.writeText("/api/profile")}>Copy API Route</button>
+          <button className="secondary-action" onClick={() => navigator.clipboard?.writeText("/api/profile")}>
+            Copy API Route
+          </button>
         </div>
         <p className="launch-readout">{launchState}</p>
       </div>
-
       <div className="integration-ribbon">
         <span>Frontend</span>
         <i />
@@ -271,7 +294,6 @@ function InventoryPage({
   onEquip: (itemId: string) => void;
 }) {
   const selectedItem = inventory.find((item) => item.id === selectedItemId) ?? inventory[0];
-
   return (
     <section className="page-panel inventory-layout">
       <div className="section-heading">
@@ -279,7 +301,6 @@ function InventoryPage({
         <h2>Weapon Skins</h2>
         <span>Synced from GET /inventory after JWT validation.</span>
       </div>
-
       <div className="inventory-grid" role="list">
         {inventory.map((item) => (
           <button
@@ -297,28 +318,15 @@ function InventoryPage({
           </button>
         ))}
       </div>
-
       <aside className="inspect-panel">
         <p>Selected</p>
         <h3>{selectedItem.name}</h3>
         <span>{selectedItem.finish}</span>
         <dl>
-          <div>
-            <dt>Weapon</dt>
-            <dd>{selectedItem.weapon}</dd>
-          </div>
-          <div>
-            <dt>Rarity</dt>
-            <dd>{selectedItem.rarity}</dd>
-          </div>
-          <div>
-            <dt>Market</dt>
-            <dd>{formatCredits(selectedItem.value)} CR</dd>
-          </div>
-          <div>
-            <dt>Status</dt>
-            <dd>{selectedItem.equipped ? "Equipped" : "Available"}</dd>
-          </div>
+          <div><dt>Weapon</dt><dd>{selectedItem.weapon}</dd></div>
+          <div><dt>Rarity</dt><dd>{selectedItem.rarity}</dd></div>
+          <div><dt>Market</dt><dd>{formatCredits(selectedItem.value)} CR</dd></div>
+          <div><dt>Status</dt><dd>{selectedItem.equipped ? "Equipped" : "Available"}</dd></div>
         </dl>
       </aside>
     </section>
@@ -326,14 +334,8 @@ function InventoryPage({
 }
 
 function TradePage({
-  inventory,
-  selectedItemId,
-  receiver,
-  trades,
-  onReceiverChange,
-  onItemChange,
-  onSendTrade,
-  onRespond,
+  inventory, selectedItemId, receiver, trades,
+  onReceiverChange, onItemChange, onSendTrade, onRespond,
 }: {
   inventory: InventoryItem[];
   selectedItemId: string;
@@ -351,15 +353,14 @@ function TradePage({
         <h2>Secure Item Exchange</h2>
         <span>Pending trades remain immutable until the receiver responds.</span>
       </div>
-
-      <form className="trade-console" onSubmit={(event) => { event.preventDefault(); onSendTrade(); }}>
+      <form className="trade-console" onSubmit={(e) => { e.preventDefault(); onSendTrade(); }}>
         <label>
           Receiver
-          <input value={receiver} onChange={(event) => onReceiverChange(event.target.value)} minLength={3} />
+          <input value={receiver} onChange={(e) => onReceiverChange(e.target.value)} minLength={3} />
         </label>
         <label>
           Item
-          <select value={selectedItemId} onChange={(event) => onItemChange(event.target.value)}>
+          <select value={selectedItemId} onChange={(e) => onItemChange(e.target.value)}>
             {inventory.map((item) => (
               <option key={item.id} value={item.id}>{item.name}</option>
             ))}
@@ -367,7 +368,6 @@ function TradePage({
         </label>
         <button className="primary-action" type="submit">Send Trade</button>
       </form>
-
       <div className="trade-history">
         {trades.map((trade) => (
           <article key={trade.id} className={`trade-row ${trade.status}`}>
@@ -390,8 +390,7 @@ function TradePage({
 }
 
 function ProfilePage({ inventoryValue, trades }: { inventoryValue: number; trades: Trade[] }) {
-  const acceptedTrades = trades.filter((trade) => trade.status === "accepted").length;
-
+  const acceptedTrades = trades.filter((t) => t.status === "accepted").length;
   return (
     <section className="page-panel profile-layout">
       <div className="section-heading">
@@ -399,7 +398,6 @@ function ProfilePage({ inventoryValue, trades }: { inventoryValue: number; trade
         <h2>Profile</h2>
         <span>JWT identity payload presented as the future GET /profile response.</span>
       </div>
-
       <div className="operator-plate">
         <div className="operator-avatar">DR</div>
         <div>
@@ -407,13 +405,11 @@ function ProfilePage({ inventoryValue, trades }: { inventoryValue: number; trade
           <p>deadeye@dustreign.gg</p>
         </div>
       </div>
-
       <div className="profile-metrics">
         <div><span>Inventory Value</span><strong>{formatCredits(inventoryValue)} CR</strong></div>
         <div><span>Accepted Trades</span><strong>{acceptedTrades}</strong></div>
         <div><span>Rank</span><strong>Frontier Elite</strong></div>
       </div>
-
       <div className="api-contract">
         <h3>Phase 2 API Contract</h3>
         {apiContract.map((route) => <code key={route}>{route}</code>)}

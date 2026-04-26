@@ -1,5 +1,96 @@
 @import "tailwindcss";
 
+/* ── SPLASH SCREEN ─────────────────────────────── */
+.splash-screen {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #080603;
+  animation: splashFadeOut 300ms ease 800ms both;
+}
+
+.splash-inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+  animation: splashRise 500ms cubic-bezier(0.2, 0.85, 0.2, 1) both;
+}
+
+.splash-sigil {
+  display: grid;
+  width: 4rem;
+  height: 4rem;
+  place-items: center;
+  color: #190e04;
+  font-weight: 950;
+  font-size: 1.3rem;
+  letter-spacing: -0.06em;
+  background: linear-gradient(135deg, #fff0bf, #d48a2a 45%, #7c3d18);
+  border: 1px solid rgba(255, 234, 183, 0.62);
+  box-shadow: 0 0 40px rgba(242, 184, 75, 0.4);
+  transform: skewX(-7deg);
+  animation: sigilPulse 900ms ease-in-out infinite alternate;
+}
+
+.splash-title {
+  margin: 0;
+  color: #fff4d7;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 3rem;
+  font-weight: 900;
+  letter-spacing: -0.07em;
+  text-transform: uppercase;
+  line-height: 1;
+}
+
+.splash-sub {
+  margin: 0;
+  color: rgba(247, 234, 211, 0.5);
+  font-size: 0.7rem;
+  font-weight: 900;
+  letter-spacing: 0.26em;
+  text-transform: uppercase;
+}
+
+.splash-bar {
+  width: 10rem;
+  height: 2px;
+  background: rgba(242, 184, 75, 0.15);
+  overflow: hidden;
+  margin-top: 0.5rem;
+}
+
+.splash-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, transparent, #f2b84b, #ffd27a, transparent);
+  animation: splashBarSweep 900ms ease-in-out forwards;
+}
+
+@keyframes splashFadeOut {
+  from { opacity: 1; }
+  to   { opacity: 0; pointer-events: none; }
+}
+
+@keyframes splashRise {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes sigilPulse {
+  from { box-shadow: 0 0 20px rgba(242, 184, 75, 0.3); }
+  to   { box-shadow: 0 0 55px rgba(242, 184, 75, 0.65); }
+}
+
+@keyframes splashBarSweep {
+  from { transform: translateX(-100%); }
+  to   { transform: translateX(100%); }
+}
+
+/* ── ROOT & RESET ──────────────────────────────── */
 :root {
   color-scheme: dark;
   font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
@@ -44,6 +135,7 @@ button {
   cursor: pointer;
 }
 
+/* ── APP SHELL ─────────────────────────────────── */
 .app-shell {
   position: relative;
   min-height: 100vh;
@@ -77,6 +169,7 @@ button {
   filter: blur(8px);
 }
 
+/* ── SCANLINE ──────────────────────────────────── */
 .scanline {
   pointer-events: none;
   position: fixed;
@@ -93,6 +186,7 @@ button {
   mix-blend-mode: soft-light;
 }
 
+/* ── TOPBAR ────────────────────────────────────── */
 .topbar {
   position: fixed;
   top: 0;
@@ -151,6 +245,7 @@ button {
   transform: skewX(-7deg);
 }
 
+/* ── NAV TABS ──────────────────────────────────── */
 .nav-tabs {
   display: flex;
   align-items: center;
@@ -200,6 +295,7 @@ button {
   transform: scaleX(1);
 }
 
+/* ── PAGE PANEL ────────────────────────────────── */
 .page-panel {
   width: min(1180px, calc(100% - 2rem));
   min-height: calc(100vh - 2rem);
@@ -208,6 +304,7 @@ button {
   animation: pageRise 520ms cubic-bezier(0.2, 0.85, 0.2, 1) both;
 }
 
+/* ── HERO / HOME ───────────────────────────────── */
 .hero-stage {
   position: relative;
   display: grid;
@@ -302,14 +399,8 @@ button {
     linear-gradient(to top, transparent 0 58%, #0c0805 59% 62%, transparent 63%);
 }
 
-.town-left {
-  left: 5%;
-}
-
-.town-right {
-  right: 8%;
-  transform: scaleX(-1) scale(0.82);
-}
+.town-left  { left: 5%; }
+.town-right { right: 8%; transform: scaleX(-1) scale(0.82); }
 
 .rail {
   position: absolute;
@@ -322,13 +413,8 @@ button {
   transform-origin: bottom center;
 }
 
-.rail-one {
-  transform: rotate(17deg);
-}
-
-.rail-two {
-  transform: rotate(-17deg);
-}
+.rail-one { transform: rotate(17deg); }
+.rail-two { transform: rotate(-17deg); }
 
 .dust {
   position: absolute;
@@ -340,18 +426,10 @@ button {
   animation: dustSweep 12s linear infinite;
 }
 
-.dust-one {
-  bottom: 20%;
-  left: -25%;
-}
+.dust-one { bottom: 20%; left: -25%; }
+.dust-two { bottom: 30%; left: -40%; animation-delay: -6s; opacity: 0.7; }
 
-.dust-two {
-  bottom: 30%;
-  left: -40%;
-  animation-delay: -6s;
-  opacity: 0.7;
-}
-
+/* ── HERO CONTENT ──────────────────────────────── */
 .hero-content {
   width: min(760px, 100%);
   padding-top: 4rem;
@@ -398,6 +476,7 @@ button {
   margin-top: 2.3rem;
 }
 
+/* ── BUTTONS ───────────────────────────────────── */
 .primary-action,
 .secondary-action,
 .trade-actions button {
@@ -444,6 +523,7 @@ button {
   font-size: 0.78rem;
 }
 
+/* ── INTEGRATION RIBBON ────────────────────────── */
 .integration-ribbon {
   position: absolute;
   right: clamp(1rem, 6vw, 6rem);
@@ -467,6 +547,7 @@ button {
   background: linear-gradient(90deg, transparent, rgba(242, 184, 75, 0.62), transparent);
 }
 
+/* ── SECTION HEADING ───────────────────────────── */
 .section-heading {
   margin-bottom: 1.8rem;
 }
@@ -489,6 +570,7 @@ button {
   line-height: 1.7;
 }
 
+/* ── PAGE LAYOUTS ──────────────────────────────── */
 .inventory-layout,
 .trade-layout,
 .profile-layout {
@@ -508,6 +590,7 @@ button {
   grid-column: 1 / -1;
 }
 
+/* ── INVENTORY GRID ────────────────────────────── */
 .inventory-grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -577,6 +660,7 @@ button {
   transform: translateX(120%);
 }
 
+/* ── WEAPON SILHOUETTE ─────────────────────────── */
 .weapon-silhouette {
   position: absolute;
   top: 2rem;
@@ -602,12 +686,13 @@ button {
   clip-path: polygon(20% 0, 100% 0, 72% 100%, 0 100%);
 }
 
-.rarity-consumer { --rarity: #a8a8a8; }
+/* ── RARITY COLORS ─────────────────────────────── */
+.rarity-consumer   { --rarity: #a8a8a8; }
 .rarity-industrial { --rarity: #70a4d8; }
-.rarity-milspec { --rarity: #4d75ff; }
+.rarity-milspec    { --rarity: #4d75ff; }
 .rarity-restricted { --rarity: #9a5cff; }
 .rarity-classified { --rarity: #d646d6; }
-.rarity-covert { --rarity: #ff4c38; }
+.rarity-covert     { --rarity: #ff4c38; }
 
 .skin-tile::after {
   position: absolute;
@@ -620,6 +705,7 @@ button {
   box-shadow: 0 0 22px var(--rarity, var(--gold));
 }
 
+/* ── PANELS ────────────────────────────────────── */
 .inspect-panel,
 .trade-console,
 .operator-plate,
@@ -695,6 +781,7 @@ button {
   font-weight: 900;
 }
 
+/* ── TRADE ─────────────────────────────────────── */
 .trade-layout {
   grid-template-columns: 350px minmax(0, 1fr);
   align-items: start;
@@ -761,9 +848,7 @@ button {
   display: block;
 }
 
-.trade-row strong {
-  color: #fff1d0;
-}
+.trade-row strong { color: #fff1d0; }
 
 .trade-row span {
   margin-top: 0.25rem;
@@ -781,14 +866,8 @@ button {
   text-transform: uppercase;
 }
 
-.trade-row.accepted mark {
-  background: var(--green);
-}
-
-.trade-row.rejected mark {
-  color: #fff3e8;
-  background: var(--blood);
-}
+.trade-row.accepted mark { background: var(--green); }
+.trade-row.rejected mark { color: #fff3e8; background: var(--blood); }
 
 .trade-actions {
   display: flex;
@@ -801,6 +880,7 @@ button {
   font-size: 0.68rem;
 }
 
+/* ── PROFILE ───────────────────────────────────── */
 .profile-layout {
   grid-template-columns: 360px minmax(0, 1fr);
   align-items: start;
@@ -831,15 +911,8 @@ button {
   margin: 0;
 }
 
-.operator-plate h3 {
-  color: #fff2d4;
-  font-size: 1.7rem;
-}
-
-.operator-plate p {
-  margin-top: 0.25rem;
-  color: var(--muted);
-}
+.operator-plate h3 { color: #fff2d4; font-size: 1.7rem; }
+.operator-plate p  { margin-top: 0.25rem; color: var(--muted); }
 
 .profile-metrics {
   display: grid;
@@ -851,6 +924,7 @@ button {
   background: rgba(255, 255, 255, 0.035);
 }
 
+/* ── API CONTRACT ──────────────────────────────── */
 .api-contract {
   grid-column: 1 / -1;
   display: grid;
@@ -877,60 +951,33 @@ button {
   font-size: 0.76rem;
 }
 
+/* ── KEYFRAMES ─────────────────────────────────── */
 @keyframes pageRise {
-  from {
-    opacity: 0;
-    transform: translateY(18px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  from { opacity: 0; transform: translateY(18px); }
+  to   { opacity: 1; transform: translateY(0); }
 }
 
 @keyframes titleDrop {
-  from {
-    opacity: 0;
-    filter: blur(10px);
-    transform: translateY(24px) scale(0.98);
-  }
-  to {
-    opacity: 1;
-    filter: blur(0);
-    transform: translateY(0) scale(1);
-  }
+  from { opacity: 0; filter: blur(10px); transform: translateY(24px) scale(0.98); }
+  to   { opacity: 1; filter: blur(0);    transform: translateY(0) scale(1); }
 }
 
 @keyframes emberPulse {
-  0%,
-  100% {
-    opacity: 0.78;
-    transform: scale(1);
-  }
-  50% {
-    opacity: 1;
-    transform: scale(1.05);
-  }
+  0%, 100% { opacity: 0.78; transform: scale(1); }
+  50%      { opacity: 1;    transform: scale(1.05); }
 }
 
 @keyframes slowDrift {
-  from {
-    transform: translateX(-1.5%) scaleY(1);
-  }
-  to {
-    transform: translateX(1.5%) scaleY(1.04);
-  }
+  from { transform: translateX(-1.5%) scaleY(1); }
+  to   { transform: translateX(1.5%)  scaleY(1.04); }
 }
 
 @keyframes dustSweep {
-  from {
-    transform: translateX(0);
-  }
-  to {
-    transform: translateX(160vw);
-  }
+  from { transform: translateX(0); }
+  to   { transform: translateX(160vw); }
 }
 
+/* ── RESPONSIVE ────────────────────────────────── */
 @media (max-width: 940px) {
   .topbar {
     align-items: stretch;
