@@ -3,10 +3,60 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Arena Web Dev App</title>
+    <title>Dust Reign — Tactical FPS Network</title>
+    <meta name="description" content="Dust Reign — A western tactical FPS platform. Launch the game, inspect skins, send trades." />
+    <meta name="theme-color" content="#080603" />
+    <style>
+      /* Critical fallback styles so page is never fully white */
+      html, body {
+        margin: 0;
+        padding: 0;
+        background: #080603;
+        color: #f7ead3;
+        font-family: Inter, ui-sans-serif, system-ui, sans-serif;
+        min-height: 100vh;
+      }
+      #root {
+        min-height: 100vh;
+      }
+      #app-loading {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        min-height: 100vh;
+        gap: 1.2rem;
+        background: #080603;
+      }
+      #app-loading span {
+        font-size: 3rem;
+        font-weight: 900;
+        letter-spacing: -0.08em;
+        font-family: Georgia, serif;
+        color: #f2b84b;
+        text-transform: uppercase;
+        animation: pulse 1.4s ease-in-out infinite;
+      }
+      #app-loading small {
+        color: rgba(247,234,211,0.52);
+        font-size: 0.78rem;
+        letter-spacing: 0.22em;
+        text-transform: uppercase;
+      }
+      @keyframes pulse {
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0.4; }
+      }
+    </style>
   </head>
   <body>
-    <div id="root"></div>
+    <div id="root">
+      <!-- Shown while React loads — replaced immediately on mount -->
+      <div id="app-loading">
+        <span>Dust Reign</span>
+        <small>Loading Platform...</small>
+      </div>
+    </div>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>
