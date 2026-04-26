@@ -1,6 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
 
-/* ─── TYPES ─────────────────────────────────────── */
 type Page        = "home" | "inventory" | "trade" | "profile";
 type Rarity      = "Consumer" | "Industrial" | "Mil-Spec" | "Restricted" | "Classified" | "Covert";
 type TradeStatus = "pending" | "accepted" | "rejected";
@@ -14,7 +13,6 @@ interface Trade {
   item: string; status: TradeStatus; createdAt: string;
 }
 
-/* ─── STATIC DATA ────────────────────────────────── */
 const NAV: { page: Page; label: string }[] = [
   { page: "home",      label: "Home"      },
   { page: "inventory", label: "Inventory" },
@@ -54,7 +52,6 @@ const STATUS_CLR: Record<TradeStatus,string> = {
 
 const fmt = (n: number) => new Intl.NumberFormat("en-US").format(n) + " CR";
 
-/* ─── DESIGN TOKENS ──────────────────────────────── */
 const C = {
   bg:        "#1c1306",
   bgCard:    "#2a1d0a",
@@ -68,48 +65,19 @@ const C = {
   topbar:    "#110d04",
 };
 
-/* ─── SPLASH ─────────────────────────────────────── */
 function Splash() {
   return (
-    <div style={{
-      position:"fixed", inset:0, zIndex:9999,
-      background: C.bg,
-      display:"flex", flexDirection:"column",
-      alignItems:"center", justifyContent:"center", gap:"1.2rem",
-    }}>
-      <div style={{
-        width:"5rem", height:"5rem",
-        background:"linear-gradient(135deg,#ffe090,#c8841e,#7c3d10)",
-        display:"grid", placeItems:"center",
-        color:"#1a0c00", fontWeight:900, fontSize:"1.5rem",
-        border:`2px solid ${C.borderHi}`,
-        boxShadow:`0 0 48px ${C.gold}`,
-        transform:"skewX(-6deg)",
-      }}>DR</div>
-      <p style={{ margin:0, color:C.goldBri, fontFamily:"Georgia,serif", fontSize:"3rem", fontWeight:900, letterSpacing:"-0.06em", textTransform:"uppercase" }}>
-        Dust Reign
-      </p>
-      <p style={{ margin:0, color:C.textMuted, fontSize:"0.72rem", fontWeight:700, letterSpacing:"0.3em", textTransform:"uppercase" }}>
-        Tactical FPS Network — Loading…
-      </p>
+    <div style={{ position:"fixed", inset:0, zIndex:9999, background:C.bg, display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"center", gap:"1.2rem" }}>
+      <div style={{ width:"5rem", height:"5rem", background:"linear-gradient(135deg,#ffe090,#c8841e,#7c3d10)", display:"grid", placeItems:"center", color:"#1a0c00", fontWeight:900, fontSize:"1.5rem", border:`2px solid ${C.borderHi}`, boxShadow:`0 0 48px ${C.gold}`, transform:"skewX(-6deg)" }}>DR</div>
+      <p style={{ margin:0, color:C.goldBri, fontFamily:"Georgia,serif", fontSize:"3rem", fontWeight:900, letterSpacing:"-0.06em", textTransform:"uppercase" }}>Dust Reign</p>
+      <p style={{ margin:0, color:C.textMuted, fontSize:"0.72rem", fontWeight:700, letterSpacing:"0.3em", textTransform:"uppercase" }}>Tactical FPS Network — Loading…</p>
       <div style={{ width:"12rem", height:"3px", background:C.bgCard, borderRadius:"2px", overflow:"hidden" }}>
-        <div style={{
-          height:"100%",
-          background:`linear-gradient(90deg,transparent,${C.gold},${C.goldBri},transparent)`,
-          animation:"barSweep 900ms ease-in-out forwards",
-        }}/>
+        <div style={{ height:"100%", background:`linear-gradient(90deg,transparent,${C.gold},${C.goldBri},transparent)`, animation:"barSweep 900ms ease-in-out forwards" }}/>
       </div>
-      <style>{`
-        @keyframes barSweep {
-          from { transform: translateX(-100%); }
-          to   { transform: translateX(100%);  }
-        }
-      `}</style>
     </div>
   );
 }
 
-/* ─── ROOT APP ───────────────────────────────────── */
 export default function App() {
   const [ready,       setReady]      = useState(false);
   const [page,        setPage]       = useState<Page>("home");
@@ -121,7 +89,7 @@ export default function App() {
 
   useEffect(() => {
     document.body.style.background = C.bg;
-    document.body.style.margin     = "0";
+    document.body.style.margin = "0";
     const t = setTimeout(() => setReady(true), 700);
     return () => clearTimeout(t);
   }, []);
@@ -148,50 +116,21 @@ export default function App() {
 
   return (
     <div style={{ minHeight:"100vh", background:C.bg, color:C.text, fontFamily:"Inter,system-ui,sans-serif", margin:0 }}>
-
-      {/* ── TOPBAR ── */}
-      <header style={{
-        position:"fixed", top:0, left:0, right:0, zIndex:100,
-        display:"flex", alignItems:"center", justifyContent:"space-between",
-        padding:"0.85rem 2rem",
-        background: C.topbar,
-        borderBottom:`2px solid ${C.border}`,
-        boxShadow:`0 4px 32px rgba(0,0,0,0.6)`,
-        gap:"1rem",
-      }}>
+      <header style={{ position:"fixed", top:0, left:0, right:0, zIndex:100, display:"flex", alignItems:"center", justifyContent:"space-between", padding:"0.85rem 2rem", background:C.topbar, borderBottom:`2px solid ${C.border}`, boxShadow:"0 4px 32px rgba(0,0,0,0.6)", gap:"1rem" }}>
         <button onClick={() => setPage("home")} style={{ display:"flex", alignItems:"center", gap:"0.8rem", background:"transparent", border:0, cursor:"pointer", padding:0 }}>
-          <div style={{
-            width:"2.6rem", height:"2.6rem",
-            background:"linear-gradient(135deg,#ffe090,#c8841e,#7c3d10)",
-            display:"grid", placeItems:"center",
-            color:"#1a0c00", fontWeight:900, fontSize:"0.85rem",
-            border:`1px solid ${C.borderHi}`,
-            boxShadow:`0 0 20px ${C.gold}66`,
-            transform:"skewX(-6deg)",
-          }}>DR</div>
+          <div style={{ width:"2.6rem", height:"2.6rem", background:"linear-gradient(135deg,#ffe090,#c8841e,#7c3d10)", display:"grid", placeItems:"center", color:"#1a0c00", fontWeight:900, fontSize:"0.85rem", border:`1px solid ${C.borderHi}`, boxShadow:`0 0 20px ${C.gold}66`, transform:"skewX(-6deg)" }}>DR</div>
           <div style={{ textAlign:"left" }}>
             <div style={{ color:C.goldBri, fontWeight:900, fontSize:"0.95rem", letterSpacing:"0.12em", textTransform:"uppercase" }}>Dust Reign</div>
             <div style={{ color:C.textMuted, fontSize:"0.62rem", letterSpacing:"0.2em", textTransform:"uppercase" }}>Tactical FPS Network</div>
           </div>
         </button>
-
         <nav style={{ display:"flex", gap:"0.2rem" }}>
           {NAV.map(n => (
-            <button key={n.page} onClick={() => setPage(n.page)} style={{
-              padding:"0.6rem 1rem",
-              background: page===n.page ? C.bgHover : "transparent",
-              border:"none",
-              borderBottom: page===n.page ? `2px solid ${C.gold}` : "2px solid transparent",
-              color: page===n.page ? C.goldBri : C.textMuted,
-              fontWeight:700, fontSize:"0.76rem",
-              letterSpacing:"0.1em", textTransform:"uppercase",
-              cursor:"pointer", transition:"all 150ms",
-            }}>{n.label}</button>
+            <button key={n.page} onClick={() => setPage(n.page)} style={{ padding:"0.6rem 1rem", background:page===n.page ? C.bgHover : "transparent", border:"none", borderBottom:page===n.page ? `2px solid ${C.gold}` : "2px solid transparent", color:page===n.page ? C.goldBri : C.textMuted, fontWeight:700, fontSize:"0.76rem", letterSpacing:"0.1em", textTransform:"uppercase", cursor:"pointer", transition:"all 150ms" }}>{n.label}</button>
           ))}
         </nav>
       </header>
 
-      {/* ── PAGES ── */}
       <div style={{ paddingTop:"5rem" }}>
         {page==="home"      && <HomeP      launch={launch} launchState={launchState} goTo={setPage} />}
         {page==="inventory" && <InventoryP inventory={inventory} selectedId={selectedId} onSelect={setSelectedId} />}
@@ -202,45 +141,30 @@ export default function App() {
   );
 }
 
-/* ─── HOME ───────────────────────────────────────── */
 function HomeP({ launch, launchState, goTo }: { launch:()=>void; launchState:string; goTo:(p:Page)=>void }) {
   return (
     <section style={{ minHeight:"calc(100vh - 5rem)", display:"flex", alignItems:"center", padding:"2rem clamp(1rem,6vw,5rem)", position:"relative", overflow:"hidden" }}>
       <div style={{ position:"absolute", inset:0, background:"linear-gradient(150deg,#2e1a06 0%,#1c1005 50%,#251408 100%)" }}/>
       <div style={{ position:"absolute", top:"8%", right:"10%", width:"clamp(10rem,25vw,24rem)", aspectRatio:"1", borderRadius:"50%", background:"radial-gradient(circle,rgba(255,210,100,0.55),rgba(220,110,30,0.25) 50%,transparent 72%)", filter:"blur(3px)" }}/>
       <div style={{ position:"absolute", bottom:0, left:0, right:0, height:"35%", background:"linear-gradient(to top,#1c1005,transparent)" }}/>
-
       <div style={{ position:"relative", zIndex:1, maxWidth:"820px" }}>
         <div style={{ display:"inline-block", padding:"0.3rem 0.8rem", background:C.bgCard, border:`1px solid ${C.border}`, marginBottom:"1.2rem" }}>
           <span style={{ color:C.gold, fontSize:"0.7rem", fontWeight:900, letterSpacing:"0.28em", textTransform:"uppercase" }}>Phase 1 · Front-End Platform</span>
         </div>
-
-        <h1 style={{
-          margin:0, color:C.goldBri,
-          fontFamily:"Georgia,'Times New Roman',serif",
-          fontSize:"clamp(4rem,13vw,11rem)",
-          fontWeight:900, lineHeight:0.82,
-          letterSpacing:"-0.08em", textTransform:"uppercase",
-          textShadow:`0 0 60px ${C.gold}44, 2px 4px 0 #00000088`,
-        }}>
+        <h1 style={{ margin:0, color:C.goldBri, fontFamily:"Georgia,'Times New Roman',serif", fontSize:"clamp(4rem,13vw,11rem)", fontWeight:900, lineHeight:0.82, letterSpacing:"-0.08em", textTransform:"uppercase", textShadow:`0 0 60px ${C.gold}44, 2px 4px 0 #00000088` }}>
           Dust<br/>Reign
         </h1>
-
-        <p style={{ maxWidth:"44rem", margin:"1.8rem 0 0", color:C.text, fontSize:"clamp(0.95rem,1.6vw,1.18rem)", lineHeight:1.8, opacity:0.9 }}>
-          A western tactical shooter hub. Launch the FPS client, inspect weapon skins,
-          execute secure item trades and sync your JWT identity across the ecosystem.
+        <p style={{ maxWidth:"44rem", margin:"1.8rem 0 0", color:C.text, fontSize:"clamp(0.95rem,1.6vw,1.18rem)", lineHeight:1.8 }}>
+          A western tactical shooter hub. Launch the FPS client, inspect weapon skins, execute secure item trades and sync your JWT identity across the ecosystem.
         </p>
-
         <div style={{ display:"flex", flexWrap:"wrap", gap:"1rem", marginTop:"2.2rem" }}>
           <button onClick={launch} style={BtnP}>🎮 Launch Game</button>
           <button onClick={() => goTo("inventory")} style={BtnS}>View Inventory</button>
           <button onClick={() => goTo("trade")} style={BtnS}>Trade Items</button>
         </div>
-
         <div style={{ marginTop:"1rem", padding:"0.6rem 0.9rem", background:C.bgCard, border:`1px solid ${C.border}`, display:"inline-block" }}>
           <span style={{ color:C.textMuted, fontFamily:"monospace", fontSize:"0.8rem" }}>{launchState}</span>
         </div>
-
         <div style={{ marginTop:"3rem", display:"flex", alignItems:"center", gap:"0.8rem", flexWrap:"wrap" }}>
           {["Frontend","Backend API","Supabase DB","FPS Client"].map((lbl,i,arr) => (
             <span key={lbl} style={{ display:"flex", alignItems:"center", gap:"0.8rem" }}>
@@ -254,7 +178,6 @@ function HomeP({ launch, launchState, goTo }: { launch:()=>void; launchState:str
   );
 }
 
-/* ─── INVENTORY ──────────────────────────────────── */
 function InventoryP({ inventory, selectedId, onSelect }: { inventory:InventoryItem[]; selectedId:string; onSelect:(id:string)=>void }) {
   const sel = inventory.find(i => i.id===selectedId) ?? inventory[0];
   return (
@@ -263,23 +186,8 @@ function InventoryP({ inventory, selectedId, onSelect }: { inventory:InventoryIt
       <div style={{ display:"grid", gridTemplateColumns:"1fr 300px", gap:"1rem", alignItems:"start" }}>
         <div style={{ display:"grid", gridTemplateColumns:"repeat(3,1fr)", gap:"0.75rem" }}>
           {inventory.map(item => (
-            <button key={item.id} onClick={() => onSelect(item.id)} style={{
-              position:"relative", overflow:"hidden",
-              minHeight:"11rem", padding:"1rem",
-              textAlign:"left", cursor:"pointer",
-              background: item.id===selectedId ? C.bgHover : C.bgCard,
-              border:`1px solid ${item.id===selectedId ? C.borderHi : C.border}`,
-              borderLeft:`4px solid ${RARITY_CLR[item.rarity]}`,
-              color:C.text, transition:"all 150ms",
-              boxShadow: item.id===selectedId ? `0 0 20px ${RARITY_CLR[item.rarity]}44` : "none",
-            }}>
-              <div style={{
-                position:"absolute", top:"1.8rem", left:"1.2rem",
-                width:"72%", height:"1.8rem",
-                background:`linear-gradient(90deg,transparent 5%,${RARITY_CLR[item.rarity]}55 6% 70%,transparent 71%)`,
-                transform:"rotate(-4deg)",
-                filter:`drop-shadow(0 0 8px ${RARITY_CLR[item.rarity]}88)`,
-              }}/>
+            <button key={item.id} onClick={() => onSelect(item.id)} style={{ position:"relative", overflow:"hidden", minHeight:"11rem", padding:"1rem", textAlign:"left", cursor:"pointer", background:item.id===selectedId ? C.bgHover : C.bgCard, border:`1px solid ${item.id===selectedId ? C.borderHi : C.border}`, borderLeft:`4px solid ${RARITY_CLR[item.rarity]}`, color:C.text, transition:"all 150ms", boxShadow:item.id===selectedId ? `0 0 20px ${RARITY_CLR[item.rarity]}44` : "none" }}>
+              <div style={{ position:"absolute", top:"1.8rem", left:"1.2rem", width:"72%", height:"1.8rem", background:`linear-gradient(90deg,transparent 5%,${RARITY_CLR[item.rarity]}55 6% 70%,transparent 71%)`, transform:"rotate(-4deg)", filter:`drop-shadow(0 0 8px ${RARITY_CLR[item.rarity]}88)` }}/>
               <strong style={{ display:"block", marginTop:"5.5rem", fontSize:"0.92rem", fontWeight:900, color:C.text }}>{item.name}</strong>
               <small style={{ display:"block", marginTop:"0.3rem", color:C.textMuted, fontSize:"0.76rem" }}>{item.weapon} · {item.rarity}</small>
               <span style={{ display:"block", marginTop:"0.5rem", color:C.goldBri, fontWeight:900, fontSize:"0.88rem" }}>{fmt(item.value)}</span>
@@ -302,7 +210,6 @@ function InventoryP({ inventory, selectedId, onSelect }: { inventory:InventoryIt
   );
 }
 
-/* ─── TRADE ──────────────────────────────────────── */
 function TradeP({ inventory, selectedId, receiver, trades, onSelect, onReceiver, onSend, onRespond }: {
   inventory:InventoryItem[]; selectedId:string; receiver:string; trades:Trade[];
   onSelect:(id:string)=>void; onReceiver:(v:string)=>void;
@@ -314,12 +221,8 @@ function TradeP({ inventory, selectedId, receiver, trades, onSelect, onReceiver,
       <div style={{ display:"grid", gridTemplateColumns:"320px 1fr", gap:"1rem", alignItems:"start" }}>
         <form onSubmit={e=>{e.preventDefault();onSend();}} style={{ ...Card, padding:"1.2rem", display:"grid", gap:"0.9rem" }}>
           <Tag>New Trade</Tag>
-          <label style={LblS}>
-            Receiver
-            <input value={receiver} onChange={e=>onReceiver(e.target.value)} style={InpS} placeholder="Username…" minLength={2}/>
-          </label>
-          <label style={LblS}>
-            Item
+          <label style={LblS}>Receiver<input value={receiver} onChange={e=>onReceiver(e.target.value)} style={InpS} placeholder="Username…" minLength={2}/></label>
+          <label style={LblS}>Item
             <select value={selectedId} onChange={e=>onSelect(e.target.value)} style={InpS}>
               {inventory.map(i=><option key={i.id} value={i.id}>{i.name}</option>)}
             </select>
@@ -333,9 +236,7 @@ function TradeP({ inventory, selectedId, receiver, trades, onSelect, onReceiver,
                 <strong style={{ display:"block", color:C.text, fontWeight:900 }}>{tr.item}</strong>
                 <span style={{ display:"block", marginTop:"0.2rem", color:C.textMuted, fontSize:"0.82rem" }}>{tr.from} → {tr.to} · {tr.createdAt}</span>
               </div>
-              <span style={{ padding:"0.28rem 0.65rem", background:STATUS_CLR[tr.status], color:"#fff", fontSize:"0.66rem", fontWeight:900, letterSpacing:"0.1em", textTransform:"uppercase" }}>
-                {tr.status}
-              </span>
+              <span style={{ padding:"0.28rem 0.65rem", background:STATUS_CLR[tr.status], color:"#fff", fontSize:"0.66rem", fontWeight:900, letterSpacing:"0.1em", textTransform:"uppercase" }}>{tr.status}</span>
               {tr.status==="pending" && tr.to==="You" && (
                 <div style={{ display:"flex", gap:"0.4rem" }}>
                   <button onClick={()=>onRespond(tr.id,"accepted")} style={{ ...BtnP, minHeight:"2rem", padding:"0 0.65rem", fontSize:"0.68rem" }}>Accept</button>
@@ -350,7 +251,6 @@ function TradeP({ inventory, selectedId, receiver, trades, onSelect, onReceiver,
   );
 }
 
-/* ─── PROFILE ────────────────────────────────────── */
 function ProfileP({ totalValue, trades }: { totalValue:number; trades:Trade[] }) {
   const accepted = trades.filter(t=>t.status==="accepted").length;
   return (
@@ -385,7 +285,6 @@ function ProfileP({ totalValue, trades }: { totalValue:number; trades:Trade[] })
   );
 }
 
-/* ─── SHARED COMPONENTS ──────────────────────────── */
 function Heading({ tag, title, sub }: { tag:string; title:string; sub:string }) {
   return (
     <div style={{ marginBottom:"2rem" }}>
@@ -404,7 +303,6 @@ function Tag({ children }: { children: React.ReactNode }) {
   );
 }
 
-/* ─── SHARED STYLES ──────────────────────────────── */
 const Wrap: React.CSSProperties = { width:"min(1180px,calc(100% - 2rem))", margin:"0 auto", padding:"2.5rem 0 5rem" };
 const Card: React.CSSProperties = { background:C.bgCard, border:`1px solid ${C.border}`, boxShadow:"0 8px 40px rgba(0,0,0,0.5)" };
 const BtnP: React.CSSProperties = { minHeight:"2.8rem", padding:"0 1.4rem", color:"#1a0900", background:"linear-gradient(135deg,#ffe090,#d4881e 50%,#8e3d10)", border:`1px solid ${C.goldBri}88`, fontWeight:900, fontSize:"0.76rem", letterSpacing:"0.12em", textTransform:"uppercase", cursor:"pointer", boxShadow:`0 0 18px ${C.gold}44, 0 4px 16px rgba(0,0,0,0.5)`, transition:"all 150ms" };
